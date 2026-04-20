@@ -6,24 +6,29 @@
 [![license](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![MCP](https://img.shields.io/badge/MCP-compatible-blue.svg)](https://modelcontextprotocol.io/)
 
-Model Context Protocol (MCP) server for [StarUML](https://staruml.io). Lets AI agents generate UML diagrams directly in StarUML from Mermaid code.
+Model Context Protocol (MCP) server for [StarUML](https://staruml.io). Lets AI agents (Claude Code, Cursor, VS Code Copilot, Codex) drive StarUML programmatically — generate UML diagrams from Mermaid, execute any built-in command, CRUD elements, save projects, and more.
 
-**Works with:** Claude Code, Claude Desktop, Cursor, VS Code Copilot, Codex CLI, and any other MCP-compatible client.
+## How it fits together
 
-**Supports both transports:** `stdio` (traditional) and `Streamable HTTP` (works around stdio compatibility issues in some clients, e.g. [Claude Code stdio MCP bug](https://github.com/anthropics/claude-code/issues/36914)).
+```
+  AI Agent  ──MCP──►  staruml-mcp (this package)  ──HTTP──►  StarUML
+                                                  :58321 (built-in, 4 tools)
+                                                  :58322 (extension, 15 tools)
+```
 
-## Features
+| Package | What it is | Where it runs |
+|---|---|---|
+| **`staruml-mcp`** (this repo) | MCP server for AI agents | your machine via `npx -y staruml-mcp` |
+| **[`staruml-mcp-extension`](https://github.com/ezrabrilliant/staruml-mcp-extension)** | StarUML plugin adding 15 HTTP endpoints | inside StarUML (install once via Extension Manager) |
 
-- Generate diagrams from Mermaid source: `classDiagram`, `sequenceDiagram`, `flowchart`, `erDiagram`, `mindmap`, `requirementDiagram`, `stateDiagram`
-- List, inspect, and export diagrams from the open StarUML project
-- Zero-config: auto-connects to StarUML's API Server on `localhost:58321`
-- Dual transport (stdio + Streamable HTTP)
-- Strict TypeScript, zod-validated I/O, structured errors
+- Using only Mermaid-based diagram tools? Install `staruml-mcp` only. The 4 built-in tools work.
+- Want the full 19 tools (project save/open, element CRUD, execute any StarUML command)? Install **both**.
 
 ## Prerequisites
 
-- **StarUML v7.0.0+** — must be running with API Server enabled
-- **Node.js 20+**
+- **StarUML v7.0.0+** with API Server enabled (see below)
+- **Node.js 20+** on the machine running the AI agent
+- **(Optional)** [`staruml-mcp-extension`](https://github.com/ezrabrilliant/staruml-mcp-extension) installed in StarUML — required for 15 of the 19 tools
 
 ### Enable StarUML API Server
 

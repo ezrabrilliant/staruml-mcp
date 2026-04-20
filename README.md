@@ -59,13 +59,16 @@ curl http://localhost:58321/
 
 Start the server in a terminal:
 ```bash
-npx -y staruml-mcp --transport http --port 3333
+npx -y staruml-mcp --transport http
+# listens on http://localhost:58323/mcp by default
 ```
 
 Register with Claude Code:
 ```bash
-claude mcp add --transport http staruml http://localhost:3333/mcp
+claude mcp add --transport http staruml http://localhost:58323/mcp
 ```
+
+> **Port `58323`** is the canonical HTTP port, chosen to sit alongside StarUML's built-in API (`58321`) and `staruml-mcp-extension` (`58322`). Override with `--port <n>` if needed.
 
 Restart Claude Code. Ask:
 > "What StarUML tools do you have?"
@@ -89,7 +92,7 @@ Restart Claude Desktop.
 
 ### Cursor / VS Code Copilot / Codex CLI
 
-Point your MCP client at `npx -y staruml-mcp` (stdio) or `http://localhost:3333/mcp` (HTTP).
+Point your MCP client at `npx -y staruml-mcp` (stdio) or `http://localhost:58323/mcp` (HTTP).
 
 ## CLI
 
@@ -97,7 +100,7 @@ Point your MCP client at `npx -y staruml-mcp` (stdio) or `http://localhost:3333/
 staruml-mcp [options]
 
   -t, --transport <type>   stdio | http              (default: stdio)
-  -p, --port <number>      HTTP listen port          (default: 3000)
+  -p, --port <number>      HTTP listen port          (default: 58323)
       --api-port <number>  StarUML built-in API port (default: 58321)
       --ext-port <number>  staruml-mcp-extension port(default: 58322)
       --api-host <url>     StarUML API host prefix   (default: http://localhost)

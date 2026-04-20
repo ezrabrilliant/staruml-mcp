@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-04-20
+
+### Changed
+- **Default HTTP `--port` changed from `3000` → `58323`** to eliminate conflicts with Next.js/Vite/React dev servers (which claim `3000` by default) and to align with the StarUML ecosystem (`58321` built-in API, `58322` extension, `58323` MCP HTTP).
+- README now matches the CLI default: install snippets no longer require `--port 3333`. Use `npx -y staruml-mcp --transport http` and point Claude Code at `http://localhost:58323/mcp`.
+
+### Migration
+- Existing users with `claude mcp add --transport http staruml http://localhost:<old>/mcp` should update the URL to `:58323`, or continue overriding via `--port <old>`.
+- The `--port` flag is retained, so power users with port conflicts can still pick their own.
+
 ## [0.3.0] - 2026-04-20
 
 ### Added

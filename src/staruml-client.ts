@@ -125,6 +125,30 @@ export class StarUMLClient {
     return this.callExt("/create_element", input);
   }
 
+  async createElementWithView(input: {
+    type: string;
+    parentId: string;
+    diagramId: string;
+    name?: string;
+    x?: number;
+    y?: number;
+    x2?: number;
+    y2?: number;
+  }): Promise<unknown> {
+    return this.callExt("/create_element_with_view", input);
+  }
+
+  async createEdgeWithView(input: {
+    type: string;
+    parentId: string;
+    diagramId: string;
+    tailViewId: string;
+    headViewId: string;
+    name?: string;
+  }): Promise<unknown> {
+    return this.callExt("/create_edge_with_view", input);
+  }
+
   async updateElement(input: { id: string; field: string; value: unknown }): Promise<unknown> {
     return this.callExt("/update_element", input);
   }

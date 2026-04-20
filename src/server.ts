@@ -293,7 +293,7 @@ export function createServer(config: ServerConfig = {}): McpServer {
 
   server.tool(
     "create_element",
-    `Create a new UML model element. The 'type' is a metamodel class name (e.g. 'UMLClass', 'UMLPackage', 'UMLInterface'). ${EXT_NOTE}`,
+    `Create a new UML model element (MODEL ONLY — not placed on any diagram canvas). For native typed diagrams (Use Case, Activity, Class), use create_element_with_view instead so shapes appear in the diagram. The 'type' is a metamodel class name. ${EXT_NOTE}`,
     {
       type: z.string().min(1).describe("Metamodel type, e.g. 'UMLClass', 'UMLPackage'"),
       parentId: z.string().min(1).describe("Parent element's _id"),
@@ -305,6 +305,62 @@ export function createServer(config: ServerConfig = {}): McpServer {
         return { content: [{ type: "text", text: `Created: ${JSON.stringify(data, null, 2)}` }] };
       } catch (error) {
         return toolError(`Failed to create element: ${formatError(error)}`);
+      }
+    },
+  );
+
+  server.tool(
+    "create_element_with_view",
+    `Create a model element AND its visual View on a diagram in one call. Use for populating native typed diagrams (UMLUseCaseDiagram, UMLActivityDiagram, UMLClassDiagram, etc.). Type examples: 'UMLActor', 'UMLUseCase', 'UMLAction', 'UMLInitialNode', 'UMLFinalNode', 'UMLDecisionNode', 'UMLClass', 'UMLComponent', 'UMLNode'. Returns view._id (for edge connections) and model._id. ${EXT_NOTE}`,
+    {
+      type: z
+        .string()
+        .min(1)
+        .describe(
+          "Element metamodel type. Examples: 'UMLActor', 'UMLUseCase', 'UMLAction', 'UMLInitialNode', 'UMLFinalNode', 'UMLDecisionNode', 'UMLMergeNode', 'UMLForkNode', 'UMLJoinNode'",
+        ),
+      parentId: z.string().min(1).describe("Owning model's _id (usually a UMLModel or UMLPackage)"),
+      diagramId: z.string().min(1).describe("Target diagram's _id"),
+      name: z.string().optional().describe("Element label"),
+      x: z.number().optional().describe("Left X coordinate (default 100)"),
+      y: z.number().optional().describe("Top Y coordinate (default 100)"),
+      x2: z.number().optional().describe("Right X coordinate (default x+100)"),
+      y2: z.number().optional().describe("Bottom Y coordinate (default y+50)"),
+    },
+    async (args) => {
+      try {
+        const data = await client.createElementWithView(args);
+        return { content: [{ type: "text", text: `Created: ${JSON.stringify(data, null, 2)}` }] };
+      } catch (error) {
+        return toolError(`Failed to create element with view: ${formatError(error)}`);
+      }
+    },
+  );
+
+  server.tool(
+    "create_edge_with_view",
+    `Connect two existing Views on a diagram with a typed relationship edge. Edge types: 'UMLAssociation' (use case), 'UMLControlFlow' (activity), 'UMLMessage' (sequence), 'UMLGeneralization', 'UMLDependency'. tailViewId is the source, headViewId is the target. Use view IDs from create_element_with_view results. ${EXT_NOTE}`,
+    {
+      type: z
+        .string()
+        .min(1)
+        .describe(
+          "Edge metamodel type: 'UMLAssociation', 'UMLControlFlow', 'UMLMessage', 'UMLGeneralization', 'UMLDependency'",
+        ),
+      parentId: z.string().min(1).describe("Owning model's _id"),
+      diagramId: z.string().min(1).describe("Diagram's _id"),
+      tailViewId: z.string().min(1).describe("Source view _id (from create_element_with_view)"),
+      headViewId: z.string().min(1).describe("Target view _id (from create_element_with_view)"),
+      name: z.string().optional().describe("Optional edge label"),
+    },
+    async (args) => {
+      try {
+        const data = await client.createEdgeWithView(args);
+        return {
+          content: [{ type: "text", text: `Created edge: ${JSON.stringify(data, null, 2)}` }],
+        };
+      } catch (error) {
+        return toolError(`Failed to create edge: ${formatError(error)}`);
       }
     },
   );

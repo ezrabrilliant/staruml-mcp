@@ -1,0 +1,38 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.ezrabrilliant/staruml-mcp",
+  "description": "MCP server for StarUML — generate UML diagrams from AI agents via stdio or HTTP.",
+  "repository": {
+    "url": "https://github.com/ezrabrilliant/staruml-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "staruml-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "runtimeArguments": [
+        {
+          "type": "named",
+          "name": "--api-port",
+          "description": "StarUML API Server port (default: 58321)",
+          "isRequired": false,
+          "format": "number",
+          "value": "58321"
+        },
+        {
+          "type": "named",
+          "name": "--api-host",
+          "description": "StarUML API Server host (default: http://localhost)",
+          "isRequired": false,
+          "format": "string",
+          "value": "http://localhost"
+        }
+      ]
+    }
+  ]
+}

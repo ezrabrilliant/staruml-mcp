@@ -13,6 +13,7 @@ interface CliOptions {
   transport: Transport;
   port: number;
   apiPort: number;
+  extPort: number;
   apiHost: string;
 }
 
@@ -24,7 +25,12 @@ async function main(): Promise<void> {
     .version(packageJson.version)
     .option("-t, --transport <transport>", `MCP transport: ${TRANSPORTS.join("|")}`, "stdio")
     .option("-p, --port <number>", "Port to listen on (HTTP transport only)", "3000")
-    .option("--api-port <number>", "StarUML API Server port", "58321")
+    .option("--api-port <number>", "StarUML built-in API Server port", "58321")
+    .option(
+      "--ext-port <number>",
+      "staruml-mcp-extension HTTP port (for extended tools)",
+      "58322",
+    )
     .option(
       "--api-host <url>",
       "StarUML API Server host (protocol + hostname, without port)",
@@ -36,6 +42,7 @@ async function main(): Promise<void> {
     transport: string;
     port: string;
     apiPort: string;
+    extPort: string;
     apiHost: string;
   }>();
 
@@ -43,12 +50,14 @@ async function main(): Promise<void> {
     transport: validateTransport(raw.transport),
     port: parsePort(raw.port, "--port"),
     apiPort: parsePort(raw.apiPort, "--api-port"),
+    extPort: parsePort(raw.extPort, "--ext-port"),
     apiHost: raw.apiHost,
   };
 
   const mcpServer = createServer({
     apiHost: options.apiHost,
     apiPort: options.apiPort,
+    extPort: options.extPort,
     name: packageJson.name,
     version: packageJson.version,
   });

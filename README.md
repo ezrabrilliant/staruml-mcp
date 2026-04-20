@@ -91,15 +91,18 @@ Point your MCP client at `npx -y staruml-mcp` (stdio) or `http://localhost:3333/
 ```
 staruml-mcp [options]
 
-  -t, --transport <type>   stdio | http            (default: stdio)
-  -p, --port <number>      HTTP listen port        (default: 3000)
-      --api-port <number>  StarUML API port        (default: 58321)
-      --api-host <url>     StarUML API host prefix (default: http://localhost)
+  -t, --transport <type>   stdio | http              (default: stdio)
+  -p, --port <number>      HTTP listen port          (default: 3000)
+      --api-port <number>  StarUML built-in API port (default: 58321)
+      --ext-port <number>  staruml-mcp-extension port(default: 58322)
+      --api-host <url>     StarUML API host prefix   (default: http://localhost)
   -V, --version            Print version
   -h, --help               Show help
 ```
 
 ## Tools Exposed
+
+### Built-in (always available, port 58321)
 
 | Tool | Description |
 |---|---|
@@ -107,6 +110,20 @@ staruml-mcp [options]
 | `get_all_diagrams_info` | List all diagrams in the current project (id, name, type). |
 | `get_current_diagram_info` | Get metadata of the currently focused diagram. |
 | `get_diagram_image_by_id` | Export a diagram as PNG by its ID. |
+
+### Extension tools (require [`staruml-mcp-extension`](https://github.com/ezrabrilliant/staruml-mcp-extension), port 58322)
+
+| Tool | Description |
+|---|---|
+| `get_all_commands` | List all 138+ built-in StarUML command IDs. |
+| `execute_command` | Execute any built-in command (e.g. `project:save`, `view:fit-to-window`). |
+| `get_project_info` | Current project's filename + top-level elements. |
+| `save_project` / `save_project_as` / `new_project` / `open_project` | Project file lifecycle. |
+| `get_element_by_id` / `find_elements` | Query model elements. |
+| `create_element` / `update_element` / `delete_element` | Element CRUD. |
+| `create_diagram` (typed native) / `switch_diagram` / `close_diagram` | Diagram management. |
+
+To enable extension tools: install `staruml-mcp-extension` in StarUML (Tools → Extension Manager → Install From URL → `https://github.com/ezrabrilliant/staruml-mcp-extension`).
 
 ## Example Prompts
 

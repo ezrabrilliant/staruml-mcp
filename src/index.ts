@@ -70,16 +70,52 @@ async function startStdio(mcpServer: ReturnType<typeof createServer>): Promise<v
   console.error("[staruml-mcp] stdio transport ready");
 }
 
-async function startHttp(
-  port: number,
-  serverConfig: Parameters<typeof createServer>[0],
-): Promise<void> {
+type ServerConfig = NonNullable<Parameters<typeof createServer>[0]>;
+
+async function startHttp(port: number, serverConfig: ServerConfig): Promise<void> {
   // Stateless mode: create a fresh server + transport per HTTP request so
   // reconnects from MCP clients (Claude Code, Cursor, etc.) always get a
   // clean state. This is the canonical pattern per MCP SDK docs.
   const httpServer = createHttpServer(async (req, res) => {
-    if (req.url !== "/mcp") {
-      res.writeHead(404).end("Not Found");
+    const url = req.url ?? "/";
+
+    // Root — friendly JSON banner, helps anyone poking at the server.
+    if (url === "/" || url === "") {
+      res.writeHead(200, { "Content-Type": "application/json" }).end(
+        JSON.stringify({
+          name: serverConfig.name,
+          version: serverConfig.version,
+          mcp_endpoint: "/mcp",
+          transport: "streamable-http",
+          auth_required: false,
+        }),
+      );
+      return;
+    }
+
+    // OAuth discovery probes (RFC 8414 / RFC 9728). MCP clients (e.g. Claude
+    // Code) try these paths to see if the server requires auth. We advertise
+    // "no auth" by returning a well-formed JSON 404 so clients don't crash
+    // trying to parse a plaintext body. This server is unauthenticated — it
+    // listens on localhost and exposes read/write of the local StarUML project.
+    if (url.startsWith("/.well-known/")) {
+      res.writeHead(404, { "Content-Type": "application/json" }).end(
+        JSON.stringify({
+          error: "not_found",
+          error_description:
+            "staruml-mcp does not require OAuth. Use the /mcp endpoint directly.",
+        }),
+      );
+      return;
+    }
+
+    if (url !== "/mcp") {
+      res.writeHead(404, { "Content-Type": "application/json" }).end(
+        JSON.stringify({
+          error: "not_found",
+          error_description: `Unknown path "${url}". Use /mcp for MCP streamable-http transport.`,
+        }),
+      );
       return;
     }
 
@@ -99,7 +135,12 @@ async function startHttp(
     } catch (error) {
       console.error("[staruml-mcp] request error:", error);
       if (!res.headersSent) {
-        res.writeHead(500).end("Internal Server Error");
+        res.writeHead(500, { "Content-Type": "application/json" }).end(
+          JSON.stringify({
+            error: "internal_error",
+            error_description: error instanceof Error ? error.message : String(error),
+          }),
+        );
       }
     }
   });

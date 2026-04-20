@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-04-20
+
+### Fixed
+- HTTP transport: non-`/mcp` paths now return **JSON 404** instead of plaintext `Not Found`. Previously, MCP clients probing OAuth discovery endpoints (`/.well-known/oauth-authorization-server`, etc. per RFC 8414/9728) received a plaintext body and crashed their JSON parser with `SyntaxError: Unexpected identifier "Not"` — manifesting as `SDK auth failed: HTTP 404: Invalid OAuth error response` in Claude Code. Discovered while connecting Claude Code v1.x to the `/mcp` endpoint.
+- Added explicit handling for `/` (returns JSON server banner) and `/.well-known/*` (returns JSON 404 advertising `auth_required: false`) so MCP clients know the server is unauthenticated without needing to parse malformed responses.
+- `500 Internal Server Error` responses also now JSON-formatted with the actual error message.
+
 ## [0.3.1] - 2026-04-20
 
 ### Changed

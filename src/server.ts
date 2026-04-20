@@ -15,6 +15,7 @@ const SUPPORTED_MERMAID_DIAGRAMS = [
 export interface ServerConfig {
   apiPort?: number;
   apiHost?: string;
+  extPort?: number;
   name?: string;
   version?: string;
 }
@@ -23,6 +24,7 @@ export function createServer(config: ServerConfig = {}): McpServer {
   const client = new StarUMLClient({
     host: config.apiHost,
     port: config.apiPort,
+    extPort: config.extPort,
   });
 
   const server = new McpServer({

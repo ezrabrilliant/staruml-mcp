@@ -29,7 +29,7 @@
   "homepage": "https://github.com/ezrabrilliant/staruml-mcp#readme",
   "type": "module",
   "bin": {
-    "staruml-mcp": "./dist/index.js"
+    "staruml-mcp": "dist/index.js"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

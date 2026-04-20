@@ -49,18 +49,18 @@ async function main(): Promise<void> {
     apiHost: raw.apiHost,
   };
 
-  const mcpServer = createServer({
+  const serverConfig = {
     apiHost: options.apiHost,
     apiPort: options.apiPort,
     extPort: options.extPort,
     name: packageJson.name,
     version: packageJson.version,
-  });
+  };
 
   if (options.transport === "stdio") {
-    await startStdio(mcpServer);
+    await startStdio(createServer(serverConfig));
   } else {
-    await startHttp(mcpServer, options.port);
+    await startHttp(options.port, serverConfig);
   }
 }
 
@@ -70,21 +70,31 @@ async function startStdio(mcpServer: ReturnType<typeof createServer>): Promise<v
   console.error("[staruml-mcp] stdio transport ready");
 }
 
-async function startHttp(mcpServer: ReturnType<typeof createServer>, port: number): Promise<void> {
-  // Stateless mode: each HTTP request is independent. Required for
-  // compatibility with clients (like Claude Code) that may reconnect and
-  // re-send initialize without tracking a session ID.
-  const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: undefined,
-  });
-  await mcpServer.connect(transport);
-
+async function startHttp(
+  port: number,
+  serverConfig: Parameters<typeof createServer>[0],
+): Promise<void> {
+  // Stateless mode: create a fresh server + transport per HTTP request so
+  // reconnects from MCP clients (Claude Code, Cursor, etc.) always get a
+  // clean state. This is the canonical pattern per MCP SDK docs.
   const httpServer = createHttpServer(async (req, res) => {
     if (req.url !== "/mcp") {
       res.writeHead(404).end("Not Found");
       return;
     }
+
+    const mcpServer = createServer(serverConfig);
+    const transport = new StreamableHTTPServerTransport({
+      sessionIdGenerator: undefined,
+    });
+
+    res.on("close", () => {
+      void transport.close();
+      void mcpServer.close();
+    });
+
     try {
+      await mcpServer.connect(transport);
       await transport.handleRequest(req, res);
     } catch (error) {
       console.error("[staruml-mcp] request error:", error);
@@ -98,10 +108,9 @@ async function startHttp(mcpServer: ReturnType<typeof createServer>, port: numbe
     console.error(`[staruml-mcp] http transport ready on http://localhost:${port}/mcp`);
   });
 
-  const shutdown = async (): Promise<void> => {
+  const shutdown = (): void => {
     console.error("[staruml-mcp] shutting down…");
     httpServer.close();
-    await transport.close();
     process.exit(0);
   };
   process.on("SIGINT", shutdown);

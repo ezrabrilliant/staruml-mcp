@@ -1,5 +1,4 @@
 import { createServer as createHttpServer } from "node:http";
-import { randomUUID } from "node:crypto";
 import { Command } from "commander";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
@@ -72,8 +71,11 @@ async function startStdio(mcpServer: ReturnType<typeof createServer>): Promise<v
 }
 
 async function startHttp(mcpServer: ReturnType<typeof createServer>, port: number): Promise<void> {
+  // Stateless mode: each HTTP request is independent. Required for
+  // compatibility with clients (like Claude Code) that may reconnect and
+  // re-send initialize without tracking a session ID.
   const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: () => randomUUID(),
+    sessionIdGenerator: undefined,
   });
   await mcpServer.connect(transport);
 

@@ -1,4 +1,5 @@
 import { createServer as createHttpServer } from "node:http";
+import { randomUUID } from "node:crypto";
 import { Command } from "commander";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
@@ -82,7 +83,7 @@ async function startHttp(
   port: number,
 ): Promise<void> {
   const transport = new StreamableHTTPServerTransport({
-    sessionIdGenerator: undefined,
+    sessionIdGenerator: () => randomUUID(),
   });
   await mcpServer.connect(transport);
 

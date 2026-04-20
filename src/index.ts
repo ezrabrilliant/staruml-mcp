@@ -26,11 +26,7 @@ async function main(): Promise<void> {
     .option("-t, --transport <transport>", `MCP transport: ${TRANSPORTS.join("|")}`, "stdio")
     .option("-p, --port <number>", "Port to listen on (HTTP transport only)", "3000")
     .option("--api-port <number>", "StarUML built-in API Server port", "58321")
-    .option(
-      "--ext-port <number>",
-      "staruml-mcp-extension HTTP port (for extended tools)",
-      "58322",
-    )
+    .option("--ext-port <number>", "staruml-mcp-extension HTTP port (for extended tools)", "58322")
     .option(
       "--api-host <url>",
       "StarUML API Server host (protocol + hostname, without port)",

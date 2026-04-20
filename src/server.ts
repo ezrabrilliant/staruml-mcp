@@ -314,7 +314,10 @@ export function createServer(config: ServerConfig = {}): McpServer {
     `Set a property on an existing element. ${EXT_NOTE}`,
     {
       id: z.string().min(1).describe("Element _id"),
-      field: z.string().min(1).describe("Property name, e.g. 'name', 'documentation', 'visibility'"),
+      field: z
+        .string()
+        .min(1)
+        .describe("Property name, e.g. 'name', 'documentation', 'visibility'"),
       value: z.unknown().describe("New value"),
     },
     async ({ id, field, value }) => {
@@ -353,7 +356,10 @@ export function createServer(config: ServerConfig = {}): McpServer {
         .describe(
           "Diagram metamodel type: 'UMLClassDiagram', 'UMLUseCaseDiagram', 'UMLSequenceDiagram', 'UMLActivityDiagram', 'UMLStateDiagram', 'UMLComponentDiagram', 'UMLDeploymentDiagram', 'ERDDiagram'",
         ),
-      parentId: z.string().min(1).describe("Parent element's _id (usually the project or a package)"),
+      parentId: z
+        .string()
+        .min(1)
+        .describe("Parent element's _id (usually the project or a package)"),
       name: z.string().optional().describe("Diagram name"),
     },
     async ({ type, parentId, name }) => {

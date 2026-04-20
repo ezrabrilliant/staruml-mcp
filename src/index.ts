@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { createServer as createHttpServer } from "node:http";
 import { Command } from "commander";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";

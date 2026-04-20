@@ -22,21 +22,9 @@ async function main(): Promise<void> {
     .name("staruml-mcp")
     .description(packageJson.description)
     .version(packageJson.version)
-    .option(
-      "-t, --transport <transport>",
-      `MCP transport: ${TRANSPORTS.join("|")}`,
-      "stdio",
-    )
-    .option(
-      "-p, --port <number>",
-      "Port to listen on (HTTP transport only)",
-      "3000",
-    )
-    .option(
-      "--api-port <number>",
-      "StarUML API Server port",
-      "58321",
-    )
+    .option("-t, --transport <transport>", `MCP transport: ${TRANSPORTS.join("|")}`, "stdio")
+    .option("-p, --port <number>", "Port to listen on (HTTP transport only)", "3000")
+    .option("--api-port <number>", "StarUML API Server port", "58321")
     .option(
       "--api-host <url>",
       "StarUML API Server host (protocol + hostname, without port)",
@@ -78,10 +66,7 @@ async function startStdio(mcpServer: ReturnType<typeof createServer>): Promise<v
   console.error("[staruml-mcp] stdio transport ready");
 }
 
-async function startHttp(
-  mcpServer: ReturnType<typeof createServer>,
-  port: number,
-): Promise<void> {
+async function startHttp(mcpServer: ReturnType<typeof createServer>, port: number): Promise<void> {
   const transport = new StreamableHTTPServerTransport({
     sessionIdGenerator: () => randomUUID(),
   });
@@ -120,9 +105,7 @@ function validateTransport(value: string): Transport {
   if ((TRANSPORTS as readonly string[]).includes(value)) {
     return value as Transport;
   }
-  throw new Error(
-    `Invalid --transport: "${value}". Must be one of: ${TRANSPORTS.join(", ")}`,
-  );
+  throw new Error(`Invalid --transport: "${value}". Must be one of: ${TRANSPORTS.join(", ")}`);
 }
 
 function parsePort(value: string, flag: string): number {

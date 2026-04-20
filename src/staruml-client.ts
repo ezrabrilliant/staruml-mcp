@@ -92,10 +92,7 @@ export class StarUMLClient {
     const json = StarUMLResponseSchema.parse(await res.json());
 
     if (!json.success) {
-      throw new StarUMLApiError(
-        json.error ?? `Unknown error from StarUML API (${slug})`,
-        slug,
-      );
+      throw new StarUMLApiError(json.error ?? `Unknown error from StarUML API (${slug})`, slug);
     }
 
     return json.data;

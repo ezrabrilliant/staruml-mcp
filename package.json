@@ -1,6 +1,7 @@
 {
   "name": "staruml-mcp",
   "version": "0.1.0",
+  "mcpName": "io.github.ezrabrilliant/staruml-mcp",
   "description": "Model Context Protocol server for StarUML — generate UML diagrams from AI agents (Claude Code, Cursor, VS Code, Codex). Supports both stdio and Streamable HTTP transports.",
   "keywords": [
     "mcp",
@@ -57,16 +58,18 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@types/node": "^22.0.0",
+    "@types/supertest": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@typescript-eslint/parser": "^8.0.0",
     "eslint": "^9.0.0",
     "prettier": "^3.3.0",
     "supertest": "^7.0.0",
-    "@types/supertest": "^6.0.0",
     "tsup": "^8.2.0",
     "tsx": "^4.19.0",
     "typescript": "^5.5.0",
+    "typescript-eslint": "^8.58.2",
     "vitest": "^2.0.0"
   }
 }

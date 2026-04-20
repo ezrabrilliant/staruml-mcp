@@ -1,0 +1,72 @@
+{
+  "name": "staruml-mcp",
+  "version": "0.1.0",
+  "description": "Model Context Protocol server for StarUML — generate UML diagrams from AI agents (Claude Code, Cursor, VS Code, Codex). Supports both stdio and Streamable HTTP transports.",
+  "keywords": [
+    "mcp",
+    "staruml",
+    "uml",
+    "diagram",
+    "model-context-protocol",
+    "ai-agent",
+    "claude",
+    "cursor"
+  ],
+  "author": {
+    "name": "Ezra Brilliant Konterliem",
+    "email": "ezrakonterliem@gmail.com",
+    "url": "https://github.com/ezrabrilliant"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ezrabrilliant/staruml-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ezrabrilliant/staruml-mcp/issues"
+  },
+  "homepage": "https://github.com/ezrabrilliant/staruml-mcp#readme",
+  "type": "module",
+  "bin": {
+    "staruml-mcp": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "commander": "^12.1.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.0",
+    "supertest": "^7.0.0",
+    "@types/supertest": "^6.0.0",
+    "tsup": "^8.2.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}

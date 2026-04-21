@@ -352,6 +352,10 @@ export function createServer(config: ServerConfig = {}): McpServer {
       tailViewId: z.string().min(1).describe("Source view _id (from create_element_with_view)"),
       headViewId: z.string().min(1).describe("Target view _id (from create_element_with_view)"),
       name: z.string().optional().describe("Optional edge label"),
+      x: z.number().optional().describe("Edge tail X coordinate (required for SeqMessage vertical positioning)"),
+      y: z.number().optional().describe("Edge tail Y coordinate (REQUIRED for UMLMessage in sequence diagrams — determines vertical position of the message; without this, all messages stack at same y)"),
+      x2: z.number().optional().describe("Edge head X coordinate"),
+      y2: z.number().optional().describe("Edge head Y coordinate (defaults to y if omitted)"),
     },
     async (args) => {
       try {

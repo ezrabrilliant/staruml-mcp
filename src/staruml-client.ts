@@ -145,6 +145,10 @@ export class StarUMLClient {
     tailViewId: string;
     headViewId: string;
     name?: string;
+    x?: number;
+    y?: number;
+    x2?: number;
+    y2?: number;
   }): Promise<unknown> {
     return this.callExt("/create_edge_with_view", input);
   }
